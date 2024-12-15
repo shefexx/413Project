@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.util.Log;
 import com.nex3z.fingerpaintview.FingerPaintView;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,7 +60,12 @@ public class MainActivity extends AppCompatActivity {
         detectButton.setOnClickListener(v -> detectDigit());
 
         // New game button logic
-        newGameButton.setOnClickListener(v -> startNewGame());
+        if (newGameButton != null) {  // Null check before setting OnClickListener
+            newGameButton.setOnClickListener(v -> startNewGame());  // Initialize new game button
+        } else {
+            Log.e("MainActivity", "New Game Button was not initialized.");
+        }
+
     }
 
     private void detectDigit() {
@@ -94,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkGameOver() {
         // heres the actual game logic, also used toasts
+
+
         //logic for winning
         if (correctGuesses >= MAX_GUESSES) {
             Toast.makeText(MainActivity.this, "You Win! 10 Correct Guesses!", Toast.LENGTH_LONG).show();
@@ -115,13 +123,24 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);  // Start GameOverActivity
     }
 
-    // Start a new game by resetting counters
+    // Start a new game by resetting counters and clearing the FingerPaintView
     private void startNewGame() {
+        // Log to track the state
+        Log.d("MainActivity", "New game started. Game state reset.");
+
+        // Reset all game counters
         correctGuesses = 0;
         incorrectGuesses = 0;
         totalGuesses = 0;
-        gameEnded = false;  // Reset gameEnded flag
-        digitDisplay.setText("");  // Clear digit display
+        gameEnded = false;  // Mark game as not ended
+
+        // Reset the display (clear the digit display)
+        digitDisplay.setText("");
+
+        // Clear the FingerPaintView
+        fingerPaintView.clear();
+
+        // Show a toast message
         Toast.makeText(MainActivity.this, "New Game Started! Draw a digit.", Toast.LENGTH_SHORT).show();
     }
 }
