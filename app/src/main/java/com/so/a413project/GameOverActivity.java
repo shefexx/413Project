@@ -2,7 +2,6 @@ package com.so.a413project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -10,33 +9,43 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class GameOverActivity extends AppCompatActivity {
 
-    private TextView resultTextView;
-    private Button newGameButton;  // Button to start a new game
+    //these are our variables for displaying the user's final score
+    // and for displaying the play agin and exit buttons
+    private TextView finalScoreText;
+    private Button playAgainButton, exitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_over);
 
-        resultTextView = findViewById(R.id.result_text);  // Find the TextView with ID result_text
-        newGameButton = findViewById(R.id.new_game_button);  // Find the Button with ID new_game_button
+        // making sure that the textviews in the xml correspond to our buttons
+        finalScoreText = findViewById(R.id.final_score_text);
+        playAgainButton = findViewById(R.id.play_again_button);
+        exitButton = findViewById(R.id.exit_button);
 
-        // passing the data from MainActivity
-        String result = getIntent().getStringExtra("result");  // Retrieve the "result" string passed via Intent
+        // using intents to pass the data in the MainActivty to this activity
+        //when the game over activity runs, it'll display whatever the user's score
+        //was in the main activity as their final score
+        int correctGuesses = getIntent().getIntExtra("correct_guesses", 0);
+        int incorrectGuesses = getIntent().getIntExtra("incorrect_guesses", 0);
 
-        // will show "You Win!" or "You Lose!")
-        resultTextView.setText(result);
+        // textview for the final score displaying
+        finalScoreText.setText("Final Score: Correct " + correctGuesses + " Incorrect " + incorrectGuesses);
 
-        newGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Starting MainActivity again to restart the game
-                Intent intent = new Intent(GameOverActivity.this, MainActivity.class);  // Create a new Intent
-                startActivity(intent);  // Start MainActivity
-                finish();  // Closing the current GameOverActivity so the user cannot go back to it
-            }
+        // using a listener so that when the play again button is pressed it
+        //returns to the Main Activity again
+        playAgainButton.setOnClickListener(v -> {
+            Intent intent = new Intent(GameOverActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // this closes the game over activity
+        });
+
+        // using a listener so that the app closes when the user presses the button
+        exitButton.setOnClickListener(v -> {
+            finish(); // this closes the game over activity
+            System.exit(0); // this forces the app to close
         });
     }
 }
-
 
